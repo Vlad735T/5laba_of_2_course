@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <cmath>
 #include <iomanip>
+#include <string>
 
 using namespace std;
 
@@ -409,17 +410,42 @@ public:
 
 
 
-int main() {
+bool isNumber(const string& str) {
+    if (str.empty()) return false;
+
+    for (char ch : str) {
+        if (!isdigit(ch)) return false;  
+    }
+
+    return true;
+}
+
+int INPUT(const string& galaxy_object) {
+    string inp;
+    while (true) {
+        cout << "Enter the number of " << galaxy_object << ": ";
+        getline(cin, inp);
+
+        if (inp.length() > 5) {
+            cerr << "Error: Input too long." << endl;
+        continue;
+        }
+
+        if (isNumber(inp)) {
+            return stoi(inp); 
+        } else {
+            cerr << "Error: Invalid input. Please enter a valid number." << endl;
+        }
+    }
+}
+
+int main() { 
     try {
-        int planets, asteroids, routes;
         cout << fixed << setprecision(2);
 
-        cout << "Enter the number of planets: ";
-        cin >> planets;
-        cout << "Enter the number of asteroids: ";
-        cin >> asteroids;
-        cout << "Enter the number of routes: ";
-        cin >> routes;
+        int planets = INPUT("Planets");
+        int asteroids = INPUT("Asteroids");
+        int routes = INPUT("Routes");
         cout << "\n";
 
         shared_ptr<CoordinateGenerator> coordGen = make_shared<CoordinateGenerator>(
