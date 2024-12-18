@@ -110,6 +110,7 @@
     "typeinfo": "cpp",
     "variant": "cpp",
     "text_encoding": "cpp",
-    "iomanip": "cpp"
+    "iomanip": "cpp",
+    "thread": "cpp"
   }
 }

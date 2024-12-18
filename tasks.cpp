@@ -393,19 +393,42 @@ public:
     void determineWinner() const {
         shared_ptr<Planet> winner = nullptr;
         for (const auto& planet : planets) {
-            if (!winner || planet->getTechnologyLevel() > winner->getTechnologyLevel() ||
-                (planet->getTechnologyLevel() == winner->getTechnologyLevel() && planet->getMoney() > winner->getMoney())) {
+            if (!winner) {
                 winner = planet;
+            } else {
+                // Преобразуем уровни технологий в числа для сравнения
+                int winnerTechLevel = 0;
+                if (winner->getTechnologyLevel() == "low") winnerTechLevel = 1;
+                else if (winner->getTechnologyLevel() == "medium") winnerTechLevel = 2;
+                else if (winner->getTechnologyLevel() == "high") winnerTechLevel = 3;
+
+                int planetTechLevel = 0;
+                if (planet->getTechnologyLevel() == "low") planetTechLevel = 1;
+                else if (planet->getTechnologyLevel() == "medium") planetTechLevel = 2;
+                else if (planet->getTechnologyLevel() == "high") planetTechLevel = 3;
+
+                // Сравниваем уровни технологий
+                if (planetTechLevel > winnerTechLevel) {
+                    winner = planet;
+                } else if (planetTechLevel == winnerTechLevel) {
+                    // Если уровень технологии одинаковый, сравниваем количество денег
+                    if (planet->getMoney() > winner->getMoney()) {
+                        winner = planet;
+                    }
+                }
             }
         }
 
         if (winner) {
             cout << "The winner is " << winner->getName() << " with technology level " << winner->getTechnologyLevel()
-                 << " and money " << winner->getMoney() << ".\n";
+                << " and money " << winner->getMoney() << ".\n";
         } else {
             cout << "No winner found.\n";
         }
     }
+
+
+
 };
 
 
@@ -446,6 +469,10 @@ int main() {
         int planets = INPUT("Planets");
         int asteroids = INPUT("Asteroids");
         int routes = INPUT("Routes");
+        cout << "Enter the steps of game: ";
+        int steps;
+        cin >> steps;
+
         cout << "\n";
 
         shared_ptr<CoordinateGenerator> coordGen = make_shared<CoordinateGenerator>(
@@ -462,7 +489,9 @@ int main() {
         field.addCorporation(make_shared<MinerCompany>("Miner Corp"));
 
         field.showInfo();
-        field.runSimulation(40);
+
+
+        field.runSimulation(steps);
     } catch (const exception& e) {
         cerr << "Error: " << e.what() << endl;
         return 1;
